@@ -13,5 +13,7 @@ def index(request):
     return render(request, 'rango/index.html', context_dict)
 
 def about(request):
-    return HttpResponse("This tutorial has been put together by Reni Mihaylova, 2034890M.  <br> Rango says here is the about page.")
-
+    
+    context_dict = {'authormessage': "This tutorial has been put together by Reni Mihaylova, 2034890M."}
+    
+    return render(request, 'rango/about.html', context_dict)

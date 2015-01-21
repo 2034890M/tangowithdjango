@@ -1,4 +1,7 @@
 <!DOCTYPE HTML>
+
+{% load staticfiles %}
+
 <HTML>
 
     <HEAD>
@@ -9,6 +12,8 @@
         <H1>Rango says...</H1>
         hello world! <STRONG>{{ boldmessage }}</STRONG><BR />
         <A HREF="/rango/about/">About</A><BR />
+		<IMG SRC="{% static "images/rango.jpg" %}" ALT="Picture of Rango" />
+		<!-- image from: http://www.imdb.com/media/rm3559242240/tt1192628?ref_=ttmi_mi_typ_sf_32# -->
     </BODY>
 
 </HTML>
