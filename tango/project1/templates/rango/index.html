@@ -1,19 +1,36 @@
 <!DOCTYPE HTML>
 
-{% load staticfiles %}
-
 <HTML>
-
     <HEAD>
         <TITLE>Rango</TITLE>
     </HEAD>
 
     <BODY>
-        <H1>Rango says...</H1>
-        hello world! <STRONG>{{ boldmessage }}</STRONG><BR />
-        <A HREF="/rango/about/">About</A><BR />
-		<IMG SRC="{% static "images/rango.jpg" %}" ALT="Picture of Rango" />
-		<!-- image from: http://www.imdb.com/media/rm3559242240/tt1192628?ref_=ttmi_mi_typ_sf_32# -->
-    </BODY>
+        <H1>Rango says...hello world!</H1>
+		<H2>Top 5 Categories.</H2>
+		
+        {% if categories %}
+		<UL>
+			{% for category in categories %}
+                <LI><a href="/rango/category/{{ category.slug }}">{{ category.name }}</A></LI>
+            {% endfor %}
+		</UL>
+		{% else %}
+		<STRONG>There are no categories present.</STRONG>
+        {% endif %}
+		
+		<H2>Most viewed pages.</H2>
+		{% if pages %}
+		<UL>
+			{% for page in pages %}
+                <LI><A HREF="{{ page.url }}">{{ page.title }}</A></LI>
+            {% endfor %}
+		</UL>
+		{% else %}
+		<STRONG>There are no pages present.</STRONG>
+        {% endif %}
+		
 
+        <P><A HREF="/rango/about/">About</A>
+    </BODY>
 </HTML>
