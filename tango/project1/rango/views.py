@@ -12,8 +12,8 @@ def index(request):
     category_list = Category.objects.order_by('-likes')[:5]
     context_dict = {'categories': category_list}
     
-    pages = Page.objects.order_by('-views')[:5]
-    context_dict['pages'] = pages
+    pages_list = Page.objects.order_by('-views')[:5]
+    context_dict['pages'] = pages_list
 
     # Render the response and send it back!
     return render(request, 'rango/index.html', context_dict)
