@@ -6,13 +6,18 @@
     </HEAD>
 
     <BODY>
-        <H1>Rango says...hello world!</H1>
+        {% if user.is_authenticated %}
+        <H1>Rango says... hello {{ user.username }}!</H1>
+        {% else %}
+        <H1>Rango says... hello world!</H1>
+        {% endif %}
+
 		<H2>Top 5 Categories.</H2>
 		
         {% if categories %}
 		<UL>
 			{% for category in categories %}
-                <LI><a href="/rango/category/{{ category.slug }}">{{ category.name }}</A></LI>
+                <LI><A HREF="/rango/category/{{ category.slug }}">{{ category.name }}</A></LI>
             {% endfor %}
 		</UL>
 		{% else %}
@@ -30,8 +35,16 @@
 		<STRONG>There are no pages present.</STRONG>
         {% endif %}
 		
-
-        <P><A HREF="/rango/about/">About</A>
+		{% if user.is_authenticated %}
 		<A HREF="/rango/add_category/">Add a New Category</A><BR />
+		<A HREF="/rango/restricted/">Restricted Page</A><BR />
+		<A HREF="/rango/logout/">Logout</A><BR />
+		{% else %}
+		<A HREF="/rango/register/">Register Here</A><BR />
+		<A HREF="/rango/login/">Login</A><BR />
+		{% endif %}
+
+		<A HREF="/rango/about/">About</A><BR/>
+		
     </BODY>
 </HTML>
