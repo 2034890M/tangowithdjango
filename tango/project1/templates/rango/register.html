@@ -1,10 +1,10 @@
-<!DOCTYPE html>
-<HTML>
-    <HEAD>
-        <TITLE>Rango</TITLE>
-    </HEAD>
+<!DOCTYPE HTML>
+{% extends 'rango/base.html' %}
+{% load staticfiles %}
 
-    <BODY>
+{% block title %}Rango : Register{% endblock %}
+
+{% block body_block %}
         <H1>Register with Rango</H1>
 
         {% if registered %}
@@ -13,7 +13,7 @@
         {% else %}
         Rango says: <STRONG>register here!</STRONG><BR />
 
-        <FORM ID="user_form" METHOD="post" ACTION="/rango/register/"
+        <FORM ID="user_form" METHOD="post" ACTION="{% url 'register' %}"
                 ENCTYPE="multipart/form-data">
 
             {% csrf_token %}
@@ -28,5 +28,5 @@
             <INPUT TYPE="submit" NAME="submit" VALUE="Register" />
         </FORM>
         {% endif %}
-    </BODY>
-</HTML>
+        
+{% endblock %}
