@@ -14,11 +14,11 @@
             <UL>
             {% if user.is_authenticated %}
                 <LI><A HREF="{% url 'restricted' %}">Restricted Page</A></LI>
-                <LI><A HREF="{% url 'logout' %}">Logout</A></LI>
+                <LI><A href="{% url 'auth_logout' %}?next=/rango/">Logout</A></LI>
                 <LI><A HREF="{% url 'add_category' %}">Add a New Category</A></LI>
             {% else %}
-                <LI><A HREF="{% url 'register' %}">Register Here</A></LI>
-                <lI><A HREF="{% url 'login' %}">Login</A></LI>
+                <LI><A href="{% url 'registration_register' %}">Register Here</A></LI>
+                <lI><A href="{% url 'auth_login' %}">Login</A></LI>
             {% endif %}
 
                 <A HREF="{% url 'about' %}">About</A><BR/>
