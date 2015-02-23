@@ -7,5 +7,7 @@
 {% block body_block %}
         <H1>{{authormessage}}</H1>
 		<IMG SRC="{% static "images/me.jpg" %}" ALT="Picture of me" />
+		
+		<p> This page has been visited {{ visits }} times.</p>
 
 {% endblock %}
