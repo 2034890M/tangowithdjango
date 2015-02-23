@@ -16,6 +16,7 @@
                 <LI><A HREF="{% url 'restricted' %}">Restricted Page</A></LI>
                 <LI><A href="{% url 'auth_logout' %}?next=/rango/">Logout</A></LI>
                 <LI><A HREF="{% url 'add_category' %}">Add a New Category</A></LI>
+				<LI><A HREF="{% url 'auth_password_change' %}">Change Password</A></LI>
             {% else %}
                 <LI><A href="{% url 'registration_register' %}">Register Here</A></LI>
                 <lI><A href="{% url 'auth_login' %}">Login</A></LI>

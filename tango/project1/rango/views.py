@@ -146,34 +146,6 @@ def add_page(request, category_name_slug):
 
     return render(request, 'rango/add_page.html', context_dict)
 
-
-@login_required
-def change_password(request):
-    changed = False
-    if request.method == "POST":
-        username = request.user.username
-        password = UserForm.password
-        new_password1 = request.POST['new_password1']
-        new_password2 = request.POST['new_password2']
-        if password == request.user.password:
-            user = authenticate(username=username, password=password)
-            if new_password1.is_valid:
-                if new_password1 == new_password2:
-                    user.set_password = new_password1
-                    user.save
-                    changed = True
-                else:
-                    return HttpResponse("New password fields don't have the same content")
-            else:
-                return HttpResponse("Invalid input for new password fields")
-        else:
-            return HttpResponse("Wrong password")
-        return render(request, 'registration/password_change.html', {'changed': changed})
-    else:
-        return render(request, 'registration/password_change.html', {})
-        
-
-
     
 ##def register(request):
 
