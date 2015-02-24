@@ -5,23 +5,26 @@
 {% block title %}Rango : Category : {{ category_name }}{% endblock %}
 
 {% block body_block %}
-		<H1>{{ category_name }}</H1>
-        {% if category %}
-            {% if pages %}
-            <UL>
-                {% for page in pages %}
-                <LI><A HREF="{{ page.url }}">{{ page.title }}</A></LI>
-                {% endfor %}
-            </UL>
-            {% else %}
-                <STRONG>No pages currently in category.</STRONG>
-            {% endif %}
-            {% if user.is_authenticated %}
-			<P><A HREF="{% url 'category'  category.slug  'add_page' %}">Add a new Page to This Category</A></P>
-            <!--not sure this works -->
-            {% endif %}
-        {% else %}
-            The specified category {{ category_name }} does not exist!
-        {% endif %}
-		
+<div class="page-header">
+	<h1>{{ category_name }}</h1>
+</div>
+<div>
+	{% if category %}
+		{% if pages %}
+		<UL>
+			{% for page in pages %}
+			<LI><A HREF="{{ page.url }}">{{ page.title }}</A></LI>
+			{% endfor %}
+		</UL>
+		{% else %}
+			<STRONG>No pages currently in category.</STRONG>
+		{% endif %}
+		{% if user.is_authenticated %}
+			<P><A HREF="/rango/category/{{category.slug}}/add_page/">Add a new Page to This Category</A></P>
+			<!--not sure this works -->
+		{% endif %}
+	{% else %}
+		The specified category {{ category_name }} does not exist!
+	{% endif %}
+</div>
 {% endblock %}

@@ -5,12 +5,14 @@
 {% block title %}Rango{% endblock %}
 
 {% block body_block %}
+<div class="page-header">
         {% if user.is_authenticated %}
         <H1>Rango says... hello {{ user.username }}!</H1>
         {% else %}
         <H1>Rango says... hello world!</H1>
         {% endif %}
-
+</div>
+<div>
 		<H2>Top 5 Categories.</H2>
 		
         {% if categories %}
@@ -35,5 +37,5 @@
         {% endif %}
 		
 		<p> visits: {{ visits }}</p>
-
+</div>
 {% endblock %}

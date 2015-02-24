@@ -1,13 +1,16 @@
-<!DOCTYPE HTML>
 {% extends 'rango/base.html' %}
+
 {% load staticfiles %}
 
-{% block title %}Rango : About{% endblock %}
+{% block title %}About{% endblock %}
 
 {% block body_block %}
-        <H1>{{authormessage}}</H1>
-		<IMG SRC="{% static "images/me.jpg" %}" ALT="Picture of me" />
-		
-		<p> This page has been visited {{ visits }} times.</p>
+<div class="page-header">
+	<h1>About</h1>
+</div>
+<div>
+	<p></strong>{{authormessage}}</p>
 
+	<img  width="350" height="300" src="{% static "images/me.jpg" %}" alt="Picture of me" /> <!-- New line -->
+</div>
 {% endblock %}
