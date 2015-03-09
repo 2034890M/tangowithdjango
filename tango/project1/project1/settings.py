@@ -50,6 +50,7 @@ INSTALLED_APPS = (
     'rango',
     'registration',
     'bootstrap_toolkit',
+
 )
 
 MIDDLEWARE_CLASSES = (

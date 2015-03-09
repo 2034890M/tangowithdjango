@@ -5,11 +5,10 @@ from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
 
-from rango.models import Category
-from rango.models import Page
-from rango.forms import CategoryForm
-from rango.forms import PageForm
-from rango.forms import UserForm, UserProfileForm
+from rango.models import Category, Page, User, UserProfile
+from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
+
+from rango.bing_search import run_query
 
 
 def index(request):
@@ -67,6 +66,19 @@ def about(request):
 def category(request, category_name_slug):
     # Create a context dictionary which we can pass to the template rendering engine.
     context_dict = {}
+    context_dict['result_list'] = None
+    context_dict['query'] = None
+
+    if request.method == 'POST':
+        query = request.POST['query'].strip()
+
+        if query:
+            # Run our Bing function to get the results list!
+            result_list = run_query(query)
+
+            context_dict['result_list'] = result_list
+            context_dict['query'] = query
+
 
     try:
         # Can we find a category name slug with the given name?
@@ -77,7 +89,7 @@ def category(request, category_name_slug):
 
         # Retrieve all of the associated pages.
         # Note that filter returns >= 1 model instance.
-        pages = Page.objects.filter(category=category)
+        pages = Page.objects.filter(category=category).order_by('-views')
 
         # Adds our results list to the template context under name pages.
         context_dict['pages'] = pages
@@ -147,63 +159,63 @@ def add_page(request, category_name_slug):
     return render(request, 'rango/add_page.html', context_dict)
 
     
-##def register(request):
+def register_profile(request):
 
 
     # A boolean value for telling the template whether the registration was successful.
     # Set to False initially. Code changes value to True when registration succeeds.
-##    registered = False
+    registered = False
 
     # If it's a HTTP POST, we're interested in processing form data.
-##    if request.method == 'POST':
+    if request.method == 'POST':
         # Attempt to grab information from the raw form information.
         # Note that we make use of both UserForm and UserProfileForm.
-##        user_form = UserForm(data=request.POST)
-##        profile_form = UserProfileForm(data=request.POST)
+        user_form = UserForm(data=request.POST)
+        profile_form = UserProfileForm(data=request.POST)
 
         # If the two forms are valid...
-##        if user_form.is_valid() and profile_form.is_valid():
+        if user_form.is_valid() and profile_form.is_valid():
             # Save the user's form data to the database.
-##            user = user_form.save()
+            user = user_form.save()
 
             # Now we hash the password with the set_password method.
             # Once hashed, we can update the user object.
-##            user.set_password(user.password)
-##            user.save()
+            user.set_password(user.password)
+            user.save()
 
             # Now sort out the UserProfile instance.
             # Since we need to set the user attribute ourselves, we set commit=False.
             # This delays saving the model until we're ready to avoid integrity problems.
-##            profile = profile_form.save(commit=False)
-##            profile.user = user
+            profile = profile_form.save(commit=False)
+            profile.user = user
 
             # Did the user provide a profile picture?
             # If so, we need to get it from the input form and put it in the UserProfile model.
-##            if 'picture' in request.FILES:
-##                profile.picture = request.FILES['picture']
+            if 'picture' in request.FILES:
+                profile.picture = request.FILES['picture']
 
             # Now we save the UserProfile model instance.
-##            profile.save()
+            profile.save()
 
             # Update our variable to tell the template registration was successful.
-##            registered = True
+            registered = True
 
         # Invalid form or forms - mistakes or something else?
         # Print problems to the terminal.
         # They'll also be shown to the user.
-##        else:
-##            print user_form.errors, profile_form.errors
+        else:
+            print user_form.errors, profile_form.errors
 
     # Not a HTTP POST, so we render our form using two ModelForm instances.
     # These forms will be blank, ready for user input.
-##    else:
-##        user_form = UserForm()
-##        profile_form = UserProfileForm()
+    else:
+        user_form = UserForm()
+        profile_form = UserProfileForm()
 
     # Render the template depending on the context.
-##    return render(request,
-##            'rango/register.html',
-##            {'user_form': user_form, 'profile_form': profile_form, 'registered': registered} )
+    return render(request,
+            'rango/profile_registration.html',
+            {'user_form': user_form, 'profile_form': profile_form, 'registered': registered} )
 
 ##def user_login(request):
 
@@ -255,3 +267,39 @@ def add_page(request, category_name_slug):
 @login_required
 def restricted(request):
     return render(request, 'rango/restricted.html', {})
+
+def search(request):
+
+    result_list = []
+
+    if request.method == 'POST':
+        query = request.POST['query'].strip()
+
+        if query:
+            # Run our Bing function to get the results list!
+            result_list = run_query(query)
+
+    return render(request, 'rango/search.html', {'result_list': result_list})
+
+def track_url(request):
+    page_id = None
+    url = '/rango/'
+    if request.method == 'GET':
+        if 'page_id' in request.GET:
+            page_id = request.GET['page_id']
+            try:
+                page = Page.objects.get(id=page_id)
+                page.views = page.views + 1
+                page.save()
+                url = page.url
+            except:
+                pass
+
+    return redirect(url)
+
+@login_required
+def profile(request):
+    user = request.user
+    userProfile = UserProfile.objects.get(user = user)
+    return render(request, 'rango/profile.html', 
+        {'username': user.username, 'email': user.email, 'website': userProfile.website, 'picture': userProfile.picture})

@@ -1,0 +1,23 @@
+{% extends 'rango/base.html' %}
+{% load staticfiles %}
+
+{% block title %}Rango : Profile{% endblock %}
+
+{% block body_block %}
+
+<div class="page-header">
+	<h1>{{ username }}</h1>
+</div>
+
+<div>
+    <img src="{{ picture }}"/>
+</div>
+
+<div>
+	<ul>
+	<li>Name: {{ username }}</li>
+	<li>email: {{ email }}</li>
+	<li>website: {{ website }}</li>
+</div>
+
+{% endblock %}
