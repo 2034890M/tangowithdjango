@@ -1,9 +1,11 @@
 from datetime import datetime
 
 from django.shortcuts import render
-from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth import authenticate, login
 from django.contrib.auth.decorators import login_required
 from django.http import HttpResponseRedirect, HttpResponse
+
+from django.shortcuts import redirect
 
 from rango.models import Category, Page, User, UserProfile
 from rango.forms import CategoryForm, PageForm, UserForm, UserProfileForm
@@ -19,7 +21,7 @@ def index(request):
     # Place the list in our context_dict dictionary which will be passed to the template engine.
     category_list = Category.objects.order_by('-likes')[:5]
     context_dict = {'categories': category_list}
-    
+
     pages_list = Page.objects.order_by('-views')[:5]
     context_dict['pages'] = pages_list
 
@@ -50,9 +52,9 @@ def index(request):
     return render(request, 'rango/index.html', context_dict)
 
 def about(request):
-    
+
     context_dict = {'authormessage': "This tutorial has been put together by Reni Mihaylova, 2034890M."}
-    
+
     # If the visits session varible exists, take it and use it.
     # If it doesn't, we haven't visited the site so set the count to zero.
     if request.session.get('visits'):
@@ -60,7 +62,7 @@ def about(request):
     else:
         count = 0
     context_dict['visits'] = count
-    
+
     return render(request, 'rango/about.html', context_dict)
 
 def category(request, category_name_slug):
@@ -72,13 +74,12 @@ def category(request, category_name_slug):
     if request.method == 'POST':
         query = request.POST['query'].strip()
 
+
         if query:
             # Run our Bing function to get the results list!
             result_list = run_query(query)
-
             context_dict['result_list'] = result_list
             context_dict['query'] = query
-
 
     try:
         # Can we find a category name slug with the given name?
@@ -135,7 +136,7 @@ def add_category(request):
 def add_page(request, category_name_slug):
 
     try:
-        cat = Category.objects.get(slug=category_name_slug)
+        cat = Category.objects.get(slug=category_name_slug.lower())
     except Category.DoesNotExist:
                 cat = None
 
@@ -148,7 +149,7 @@ def add_page(request, category_name_slug):
                 page.views = 0
                 page.save()
                 # probably better to use a redirect here.
-                return category(request, category_name_slug)
+                return redirect('/rango/category/' + category_name_slug + "/")
         else:
             print form.errors
     else:
@@ -158,7 +159,7 @@ def add_page(request, category_name_slug):
 
     return render(request, 'rango/add_page.html', context_dict)
 
-    
+
 def register_profile(request):
 
 
@@ -199,6 +200,10 @@ def register_profile(request):
 
             # Update our variable to tell the template registration was successful.
             registered = True
+            username = request.POST['username']
+            password = request.POST['password']
+            user = authenticate(username=username, password=password)
+            login(request, user)
 
         # Invalid form or forms - mistakes or something else?
         # Print problems to the terminal.
@@ -299,7 +304,17 @@ def track_url(request):
 
 @login_required
 def profile(request):
+    conext_dict = {}
     user = request.user
     userProfile = UserProfile.objects.get(user = user)
-    return render(request, 'rango/profile.html', 
-        {'username': user.username, 'email': user.email, 'website': userProfile.website, 'picture': userProfile.picture})
+    conext_dict['username'] = user.username
+    conext_dict['email'] = user.email
+    if userProfile.website:
+        conext_dict['website'] = userProfile.website
+    else:
+        conext_dict['website'] = ''
+    if userProfile.picture:
+        conext_dict['picture'] = userProfile.picture.url
+    else:
+        conext_dict['picture'] = ''
+    return render(request, 'rango/profile.html', conext_dict)
