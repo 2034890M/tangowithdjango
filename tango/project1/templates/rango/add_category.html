@@ -5,7 +5,7 @@
 {% block title %}Rango : Add a Category{% endblock %}
 
 {% block body_block %}
-	<FORM role="form" ID="category_form" METHOD="post" ACTION="{% url 'add_category' %}">
+	<form role="form" ID="category_form" METHOD="post" ACTION="{% url 'add_category' %}">
 	<h2 class="form-signin-heading">Add a Category</h2>
 
 		{% csrf_token %}
@@ -22,5 +22,4 @@
 		<br/>
             <button class="btn btn-primary" type="submit" name="submit">Add Category</button>
     </form>
-</div>
 {% endblock %}
